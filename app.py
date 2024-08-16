@@ -36,8 +36,9 @@ def upload_image():
 if __name__ == "__main__":
     # Check the System Type before to decide to bind
     # If the system is a Linux machine -:)
-    if platform.system() == "Linux":
-        app.run(host='0.0.0.0', port=5000, debug=True)
-    # If the system is a windows /!\ Change  /!\ the   /!\ Port
-    elif platform.system() == "Windows":
-        app.run(host='0.0.0.0', port=50000, debug=True)
+    # if platform.system() == "Linux":
+    #     app.run(host='0.0.0.0', port=5000, debug=True)
+    # # If the system is a windows /!\ Change  /!\ the   /!\ Port
+    # elif platform.system() == "Windows":
+    #     app.run(host='0.0.0.0', port=50000, debug=True)
+    app.run()
