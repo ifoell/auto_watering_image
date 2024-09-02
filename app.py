@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 from flask import Flask, request, jsonify
-from tensorflow.keras.models import load_model
 
 import image_processing
 
@@ -15,11 +14,8 @@ def upload_image():
     npimg = np.frombuffer(file.read(), np.uint8)
     img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
 
-    # Load the trained CNN model
-    model = load_model('sawi_model.h5')
-
     # Process the image to determine if the plant needs watering
-    needs_watering = image_processing.predict_image(img, model)
+    needs_watering = image_processing.predict_image(img)
 
     if needs_watering:
         return jsonify({"command": "water"})

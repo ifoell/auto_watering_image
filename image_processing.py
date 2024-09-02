@@ -7,26 +7,13 @@ Created on Thu Aug 15 15:00:25 2024
 
 import cv2
 import numpy as np
+from tensorflow.keras.models import load_model
+
+# Load the trained CNN model
+model = load_model('sawi_model.h5')
 
 
-# Function to process the image using the loaded CNN model
-# def process_image(img, model, input_shape=(64, 64)):
-#     # Resize the image to match the input shape of the CNN
-#     img_resized = cv2.resize(img, input_shape)
-#
-#     # Normalize the image data
-#     img_normalized = img_resized / 255.0
-#
-#     # Add batch dimension (since the model expects batches of images)
-#     img_batch = np.expand_dims(img_normalized, axis=0)
-#
-#     # Predict the green probability
-#     green_prob = model.predict(img_batch)[0][0]
-#
-#     # If the green probability is less than 50%, assume the plant needs watering
-#     return green_prob < 0.5
-
-def predict_image(img, model):
+def predict_image(img):
     # Load the image
     # img = cv2.imread(img_path)
 
