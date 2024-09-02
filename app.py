@@ -1,14 +1,8 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Aug 15 12:55:22 2024
-
-@author: SyHAF
-"""
-
-import platform
 import cv2
 import numpy as np
 from flask import Flask, request, jsonify
+from tensorflow.keras.models import load_model
+
 import image_processing
 
 app = Flask(__name__)
@@ -20,12 +14,12 @@ def upload_image():
     file = request.files['file']
     npimg = np.frombuffer(file.read(), np.uint8)
     img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
-    # Create and/or load the CNN model
-    input_shape = (64, 64, 3)
-    model = image_processing.create_cnn_model(input_shape)
+
+    # Load the trained CNN model
+    model = load_model('sawi_model.h5')
 
     # Process the image to determine if the plant needs watering
-    needs_watering = image_processing.process_image(img, model, input_shape[:2])
+    needs_watering = image_processing.predict_image(img, model)
 
     if needs_watering:
         return jsonify({"command": "water"})
@@ -34,11 +28,4 @@ def upload_image():
 
 
 if __name__ == "__main__":
-    # Check the System Type before to decide to bind
-    # If the system is a Linux machine -:)
-    # if platform.system() == "Linux":
-    #     app.run(host='0.0.0.0', port=5000, debug=True)
-    # # If the system is a windows /!\ Change  /!\ the   /!\ Port
-    # elif platform.system() == "Windows":
-    #     app.run(host='0.0.0.0', port=50000, debug=True)
     app.run()

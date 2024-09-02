@@ -7,53 +7,46 @@ Created on Thu Aug 15 15:00:25 2024
 
 import cv2
 import numpy as np
-from keras.api.models import Sequential
-from keras.api.layers import Conv2D, MaxPooling2D, Flatten, Dense
-from keras.api.optimizers import Adam
 
 
-def create_cnn_model(input_shape):
-    model = Sequential()
+# Function to process the image using the loaded CNN model
+# def process_image(img, model, input_shape=(64, 64)):
+#     # Resize the image to match the input shape of the CNN
+#     img_resized = cv2.resize(img, input_shape)
+#
+#     # Normalize the image data
+#     img_normalized = img_resized / 255.0
+#
+#     # Add batch dimension (since the model expects batches of images)
+#     img_batch = np.expand_dims(img_normalized, axis=0)
+#
+#     # Predict the green probability
+#     green_prob = model.predict(img_batch)[0][0]
+#
+#     # If the green probability is less than 50%, assume the plant needs watering
+#     return green_prob < 0.5
 
-    # Convolutional Layer 1
-    model.add(Conv2D(32, (3, 3), activation='relu', input_shape=input_shape))
-    model.add(MaxPooling2D((2, 2)))
+def predict_image(img, model):
+    # Load the image
+    # img = cv2.imread(img_path)
 
-    # Convolutional Layer 2
-    model.add(Conv2D(64, (3, 3), activation='relu'))
-    model.add(MaxPooling2D((2, 2)))
-
-    # Convolutional Layer 3
-    model.add(Conv2D(128, (3, 3), activation='relu'))
-    model.add(MaxPooling2D((2, 2)))
-
-    # Flatten the feature maps
-    model.add(Flatten())
-
-    # Fully connected layer
-    model.add(Dense(128, activation='relu'))
-
-    # Output layer with sigmoid activation for binary classification
-    model.add(Dense(1, activation='sigmoid'))
-
-    # Compile the model
-    model.compile(optimizer=Adam(), loss='binary_crossentropy', metrics=['accuracy'])
-
-    return model
-
-
-# Function to process the image using CNN
-def process_image(img, model, input_shape=(64, 64)):
-    # Resize the image to match the input shape of the CNN
+    # Resize the image to match the input shape of the CNN (e.g., 64x64)
+    input_shape = (224, 224)
     img_resized = cv2.resize(img, input_shape)
 
-    # Normalize the image data
+    # Normalize the image data to be in the range [0, 1]
     img_normalized = img_resized / 255.0
 
-    # Predict the green ratio (assuming 1 for green, 0 for not green)
-    green_prob = model.predict(np.expand_dims(img_normalized, axis=0))[0][0]
+    # Expand dimensions to match the input shape of the model (batch size, height, width, channels)
+    img_expanded = np.expand_dims(img_normalized, axis=0)
 
-    # If the green probability is less than 50%, assume the plant needs watering
-    if green_prob < 0.5:
-        return True
-    return False
+    # Predict using the loaded model
+    prediction = model.predict(img_expanded)
+
+    # Convert the prediction result into a meaningful label (e.g., healthy/unhealthy)
+    if prediction[0][0] < 0.5:
+        output = True
+    else:
+        output = False
+
+    return output
