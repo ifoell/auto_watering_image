@@ -7,7 +7,8 @@ Created on Thu Aug 15 15:00:25 2024
 
 import cv2
 import numpy as np
-from keras._tf_keras.keras.models import load_model
+# from keras._tf_keras.keras.models import load_model
+from keras.models import load_model
 
 # Load the trained CNN model
 model = load_model('sawi_model_tf_2161.h5')
@@ -31,7 +32,7 @@ def predict_image(img):
     prediction = model.predict(img_expanded)
 
     # Convert the prediction result into a meaningful label (e.g., healthy/unhealthy)
-    if prediction[0][0] < 0.5:
+    if prediction[0][0] < 0.2:
         output = True
     else:
         output = False
